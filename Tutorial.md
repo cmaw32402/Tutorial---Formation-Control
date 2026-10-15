@@ -43,8 +43,6 @@ project/
 - `actuation.py`: Converts control vectors into wheel commands.
 - `img_overlay.py`: Optionally displays robot positions, control vectors, and formation error.
 
-The supplied entry-point file is `rendezvous_new(1).py`; this tutorial calls it `main.py`. Use the filename of your own entry-point script when running it.
-
 ## 3. Hardware
 
 ### Requirements
