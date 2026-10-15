@@ -776,7 +776,7 @@ Possible solutions include:
 - Increase the stopping threshold
 - Reduce wheel speed
 
-## 12. Limitations
+## 12. Limitations (Keep?)
 
 This introductory implementation has several limitations:
 
@@ -786,11 +786,8 @@ This introductory implementation has several limitations:
 - The controller is centralized
 - The robots may collide while moving into formation
 - Only basic proximity-sensor-based reactive avoidance is included; collision-free motion is not guaranteed
-- Desired spacing is specified by `SHAPE_R`, but tracking error and collisions may prevent exact formation maintenance
-- No waypoint movement is included
 - No camera calibration or homography is included
 
-These features can be introduced in later tutorials.
 
 ## 13. Summary
 
