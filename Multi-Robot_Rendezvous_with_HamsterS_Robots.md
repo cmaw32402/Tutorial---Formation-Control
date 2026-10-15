@@ -107,7 +107,7 @@ The actual controller imports the HamsterS class using:
 from roboid import *
 ```
 
-For different robot platforms, use the relevant manufacturer's Python SDK or control API. SciPy is not required for this fixed-slot baseline; it is used in the optional automatic slot-assignment extension. The supplied `formation_control.py` has an unused SciPy import that can be removed.
+For different robot platforms, use the relevant manufacturer's Python SDK or control API.
 
 ### Controller Settings
 
@@ -390,7 +390,7 @@ u_i = \sum_{j\ne i} e_{ij}
 = \sum_{j\ne i}\left[(p_j-p_i)-d_{ij}^*\right]
 $$
 
-Here, $u_i=[u_{ix},u_{iy}]$ is the two-dimensional control vector. The fixed slots determine which relative positions each robot should maintain. Automatic reassignment of these slots is addressed separately, not by this baseline.
+Here, $u_i=[u_{ix},u_{iy}]$ is the two-dimensional control vector. The fixed slots determine which relative positions each robot should maintain.
 
 ## 7. Converting a Vector into Robot Motion
 
