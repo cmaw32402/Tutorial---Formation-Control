@@ -171,19 +171,17 @@ if ids is not None:
 
 The robot position is estimated using the center of its ArUco marker. This is calculated by averaging the x and y coordinates of the marker’s four corners.
 
-For marker corners $(c_0,c_1,c_2,c_3)$, the center is:
+For marker corners $`(c_0,c_1,c_2,c_3)`$, the center is:
 
-$$
-
+```math
 p_i = \frac{c_0+c_1+c_2+c_3}{4}
-
-$$
+```
 
 Where:
 
-- $p_i = [x_i,y_i]$: Estimated position of robot $i$ in image coordinates.
-- $c_0,c_1,c_2,c_3$: The four detected ArUco marker corners, each represented as an $(x,y)$ coordinate.
-- $i$: Index identifying a robot.
+- $`p_i = [x_i,y_i]`$: Estimated position of robot $`i`$ in image coordinates.
+- $`c_0,c_1,c_2,c_3`$: The four detected ArUco marker corners, each represented as an $`(x,y)`$ coordinate.
+- $`i`$: Index identifying a robot.
 
 Example:
 
@@ -204,6 +202,8 @@ The robot heading is estimated using the direction from the bottom edge of the A
   <img src="images/robot_heading_marker.png" alt="ArUco marker corners, top and bottom edge midpoints, and heading vector" width="450">
 </p>
 <p align="center"><em>Figure 2. Marker-edge midpoints and heading direction.</em></p>
+
+The illustration labels the four corners from $`c_1`$ to $`c_4`$, while the OpenCV code above uses the zero-based indices $`c_0`$ to $`c_3`$. Its axes are illustrative; the controller computes angles using image coordinates, where the positive y-direction points downward.
 
 First, the midpoint of the top edge and the midpoint of the bottom edge are calculated:
 
@@ -229,13 +229,13 @@ theta = math.degrees(
 )
 ```
 
-The measured heading is in degrees. Normalize it to the range $[0^\circ,360^\circ)$:
+The measured heading is in degrees. Normalize it to the range $`[0^\circ,360^\circ)`$:
 
 ```python
 theta %= 360
 ```
 
-The robot pose can be written as $[x,y,\theta]$, where $\theta$ is the heading measured from the positive image x-axis. In image coordinates, positive angles increase clockwise. The actual `RobotAgent` stores `position` and `orientation` as separate fields.
+The robot pose can be written as $`[x,y,\theta]`$, where $`\theta`$ is the heading measured from the positive image x-axis. In image coordinates, positive angles increase clockwise. The actual `RobotAgent` stores `position` and `orientation` as separate fields.
 
 ### Updating Poses Safely
 
@@ -274,24 +274,24 @@ The formation controller uses the relative positions between each pair of robots
 
 ### Circular Formation
 
-In this project, the desired formation places the robots at equally spaced points around a circle. The angular spacing is calculated by dividing $2\pi$ radians by the number of robots. This produces a set of formation coordinates centered at the origin, $(0,0)$.
+In this project, the desired formation places the robots at equally spaced points around a circle. The angular spacing is calculated by dividing $`2\pi`$ radians by the number of robots. This produces a set of formation coordinates centered at the origin, $`(0,0)`$.
 
-These formation coordinates are stored in $P^*$:
+These formation coordinates are stored in $`P^*`$:
 
-$$
+```math
 p_i^* = \begin{bmatrix}
 R\cos\left(\frac{2\pi i}{N}\right) \\
 R\sin\left(\frac{2\pi i}{N}\right)
 \end{bmatrix}, \qquad i=0,\ldots,N-1
-$$
+```
 
 Where:
 
-- $P^*$: The array containing all desired formation positions $p_i^*$.
-- $N$ (`ROBOTS_N`): Number of robots.
-- $R$ (`SHAPE_R`): Desired formation radius, in image pixels.
-- $i$: Robot's fixed formation slot index, starting at 0.
-- $2\pi/N$: Angular spacing between consecutive slots.
+- $`P^*`$: The array containing all desired formation positions $`p_i^*`$.
+- $`N`$ (`ROBOTS_N`): Number of robots.
+- $`R`$ (`SHAPE_R`): Desired formation radius, in image pixels.
+- $`i`$: Robot's fixed formation slot index, starting at 0.
+- $`2\pi/N`$: Angular spacing between consecutive slots.
 
 <table>
   <tr>
@@ -325,25 +325,36 @@ def p_star():
 
 The center-to-center spacing between adjacent formation slots is:
 
-$$
+```math
 d_{\mathrm{adjacent}}=2R\sin\left(\frac{\pi}{N}\right)
-$$
+```
 
 For `ROBOTS_N = 4` and `SHAPE_R = 100`, adjacent slots are approximately 141.4 pixels apart. This helps when choosing a radius large enough for physical clearance.
 
 ### Desired Pairwise Displacements
 
-The desired displacement vectors between robots $i$ and $j$ are calculated from the coordinates in $P^*$ and stored in $d^*$:
+The desired displacement vectors between robots $`i`$ and $`j`$ are calculated from the coordinates in $`P^*`$ and stored in $`d^*`$:
 
-$$
+```math
 d_{ij}^* = p_j^* - p_i^*
-$$
+```
 
 Where:
 
-- $d_{ij}^*$: Desired displacement vector pointing from robot $i$ to robot $j$.
-- $p_i^*$ and $p_j^*$: Desired positions of the fixed formation slots for robots $i$ and $j$.
+- $`d_{ij}^*`$: Desired displacement vector pointing from robot $`i`$ to robot $`j`$.
+- $`p_i^*`$ and $`p_j^*`$: Desired positions of the fixed formation slots for robots $`i`$ and $`j`$.
 - `d_star(ROBOTS, desired_positions)`: Builds the desired-displacement array using each robot's assigned `slot`.
+
+The three diagrams below show the desired displacement vectors from each robot's assigned formation slot to the other two slots in a three-robot circle. Solid squares denote the robot whose vectors are being shown; dashed squares mark the other target slots.
+
+<table>
+  <tr>
+    <td width="33%" align="center"><img src="images/desired_displacements_robot_0.png" alt="Desired displacement vectors from robot 0 to robots 1 and 2" width="100%"></td>
+    <td width="33%" align="center"><img src="images/desired_displacements_robot_1.png" alt="Desired displacement vectors from robot 1 to robots 0 and 2" width="100%"></td>
+    <td width="33%" align="center"><img src="images/desired_displacements_robot_2.png" alt="Desired displacement vectors from robot 2 to robots 0 and 1" width="100%"></td>
+  </tr>
+</table>
+<p align="center"><em>Figure 4. Desired pairwise displacement vectors for robots 0, 1, and 2 in a three-robot circular formation.</em></p>
 
 ```python
 def d_star(ROBOTS, desired_positions):
@@ -361,42 +372,52 @@ The supplied `formation_control(2).py` contains `p_star()` but does not yet defi
 
 ### Formation Error and Control Vector
 
-For robot $i$, the current displacement vector to robot $j$ is calculated by subtracting the position of robot $i$ from the position of robot $j$. The desired displacement vector $d_{ij}^*$ is then subtracted from this current displacement.
+For robot $`i`$, the current displacement vector to robot $`j`$ is calculated by subtracting the position of robot $`i`$ from the position of robot $`j`$. The desired displacement vector $`d_{ij}^*`$ is then subtracted from this current displacement.
 
-Remember that $p_j-p_i$ produces a vector pointing from robot $i$ to robot $j$.
+Remember that $`p_j-p_i`$ produces a vector pointing from robot $`i`$ to robot $`j`$.
 
-$$
+<p align="center">
+  <img src="images/formation_pairwise_comparison.png" alt="Three columns comparing desired and measured pairwise displacement vectors for robots 0, 1, and 2" width="760">
+</p>
+<p align="center"><em>Figure 5. Desired displacements (top row) versus current measured displacements (bottom row) for the same three robots.</em></p>
+
+```math
 d_{ij}=p_j-p_i
-$$
+```
 
-$$
+```math
 e_{ij}=(p_j-p_i)-d_{ij}^*
-$$
+```
 
-For example, with $p_i=(100,100)$, $p_j=(70,160)$ and $d_{ij}^*=(-100,100)$:
+For example, with $`p_i=(100,100)`$, $`p_j=(70,160)`$ and $`d_{ij}^*=(-100,100)`$:
 
-$$
+```math
 d_{ij}=(-30,60),\qquad e_{ij}=(-30,60)-(-100,100)=(70,-40)
-$$
+```
 
-This is one pair's contribution to robot $i$'s control vector. The controller sums the errors from all other robots.
+This is one pair's contribution to robot $`i`$'s control vector. The controller sums the errors from all other robots.
 
-The resulting pairwise displacement errors are summed to produce the control vector for robot $i$:
+The resulting pairwise displacement errors are summed to produce the control vector for robot $`i`$:
 
-$$
+```math
 u_i = \sum_{j\ne i} e_{ij}
 = \sum_{j\ne i}\left[(p_j-p_i)-d_{ij}^*\right]
-$$
+```
 
-Here, $u_i=[u_{ix},u_{iy}]$ is the two-dimensional control vector. The fixed slots determine which relative positions each robot should maintain.
+Here, $`u_i=[u_{ix},u_{iy}]`$ is the two-dimensional control vector. The fixed slots determine which relative positions each robot should maintain.
+
+<p align="center">
+  <img src="images/formation_control_u.png" alt="Formation control vectors pointing from current measured positions toward corrected positions for three robots" width="760">
+</p>
+<p align="center"><em>Figure 6. Formation-control vectors obtained by summing each robot's pairwise displacement errors.</em></p>
 
 ## 7. Converting a Vector into Robot Motion
 
 The formation controller produces a movement vector in the camera image coordinate frame:
 
-$$
+```math
 u=[u_x,u_y]
-$$
+```
 
 This vector contains both a desired movement direction and a magnitude. However, a differential-drive robot cannot move directly in an arbitrary x and y direction. It can only drive forward or backward and rotate by changing the speeds of its two wheels.
 
@@ -414,15 +435,15 @@ This gives the direction that the robot should face, in degrees, using the same 
 angle_error = target_angle - theta
 ```
 
-The angle error is wrapped to the range $[-180^\circ,180^\circ)$ so that the robot turns through the shortest direction:
+The angle error is wrapped to the range $`[-180^\circ,180^\circ)`$ so that the robot turns through the shortest direction:
 
 ```python
 angle_error = (angle_error + 180) % 360 - 180
 ```
 
-$$
+```math
 e_\theta = ((\theta_{\mathrm{target}}-\theta_i+180)\bmod 360)-180
-$$
+```
 
 ### Turning
 
@@ -430,9 +451,9 @@ If the heading error is larger than `ANGLE_THRESHOLD`, the wheels rotate in oppo
 
 When the heading error exceeds `ANGLE_THRESHOLD`, turn speed is proportional to its absolute value, with a cap of 40 in the original controller:
 
-$$
+```math
 s_{\mathrm{turn}}=\min(K_{p,\theta}|e_\theta|,40)
-$$
+```
 
 ```python
 turn_speed = min(settings.KP_ANGLE * abs(angle_error), 40)
@@ -448,17 +469,17 @@ Once the robot is facing approximately in the direction of the movement vector, 
 
 The magnitude or length of the vector is calculated using:
 
-$$
+```math
 \lVert u\rVert=\sqrt{u_x^2+u_y^2}
-$$
+```
 
 `DISTANCE_THRESHOLD` defines how small this control vector must be before the robot should stop. It does not directly measure distance to another robot or guarantee that every pairwise error is below that threshold.
 
 The forward wheel speed is proportional to the vector magnitude, again capped at 40:
 
-$$
+```math
 s_{\mathrm{forward}}=\min(K_{p,d}\lVert u\rVert,40)
-$$
+```
 
 ```python
 distance = np.linalg.norm(u)
@@ -498,7 +519,7 @@ This is basic reactive obstacle avoidance, not collision-free path planning. On 
 
 ### Tuning the Controller
 
-The controller caps normal turning and forward wheel commands at 40, separately from `OBS_SPEED`. `SHAPE_R` controls the target formation spacing; `DISTANCE_THRESHOLD` applies to $\lVert u_i\rVert$, not to individual robot-to-robot distances.
+The controller caps normal turning and forward wheel commands at 40, separately from `OBS_SPEED`. `SHAPE_R` controls the target formation spacing; `DISTANCE_THRESHOLD` applies to $`\lVert u_i\rVert`$, not to individual robot-to-robot distances.
 
 A smaller `ANGLE_THRESHOLD` makes the robot align more accurately with its control vector, but a threshold that is too small may cause repeated turning corrections.
 
@@ -596,7 +617,7 @@ This is a safety mechanism designed to stop all robots whenever any required rob
         displacement_error = actual_offset - desired_offset
 ```
 
-Positions are extracted from the robot objects and used to find the actual displacement vectors between every ordered pair of robots. `actual_offset[i, j]` equals $p_j-p_i$. The desired offset is subtracted to find the pairwise displacement error. Both arrays have shape `(N, N, 2)`.
+Positions are extracted from the robot objects and used to find the actual displacement vectors between every ordered pair of robots. `actual_offset[i, j]` equals $`p_j-p_i`$. The desired offset is subtracted to find the pairwise displacement error. Both arrays have shape `(N, N, 2)`.
 
 A robot’s control vector is the sum of its pairwise displacement errors across the other robots (not a sum of the uncorrected distances). The result has shape `(N, 2)`, one control vector per robot.
 
@@ -698,9 +719,9 @@ The robots are not supposed to reach the same pixel. With four robots, the desir
 
 The mean pairwise formation error measures how close the robot arrangement is to its desired relative displacements:
 
-$$
+```math
 E(t)=\frac{1}{N(N-1)}\sum_{i\ne j}\|e_{ij}(t)\|
-$$
+```
 
 Smaller values indicate a closer match to the desired formation. The supplied `utils/img_overlay.py` already calculates this metric through `global_error()` and can display it with `draw_overlay()`. To record it during the loop, add:
 
