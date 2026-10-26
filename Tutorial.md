@@ -507,6 +507,11 @@ if right > settings.OBS_THRESHOLD:
 
 This is basic reactive obstacle avoidance, not collision-free path planning. On another differential-drive platform, the formation calculations remain applicable; sensor and wheel commands must be adapted to that robot.
 
+<p align="center">
+  <img src="images/obstacle_vid.gif" alt="HamsterS robots demonstrating reactive obstacle avoidance" width="550">
+</p>
+<p align="center"><em>Physical demonstration of reactive obstacle avoidance during formation control.</em></p>
+
 ### Tuning the Controller
 
 The controller caps normal turning and forward wheel commands at 40, separately from `OBS_SPEED`. `SHAPE_R` controls the target formation spacing; `DISTANCE_THRESHOLD` applies to $`\lVert u_i\rVert`$, not to individual robot-to-robot distances.
@@ -707,7 +712,10 @@ The robots are not supposed to reach the same pixel. With four robots, the desir
 
 ### Real-Robot Demonstration
 
-[Watch the HamsterS robots perform formation control (MP4)](images/Media2_cropped.mp4)
+<p align="center">
+  <img src="images/Media2_cropped.gif" alt="HamsterS robots moving into their circular formation" width="550">
+</p>
+<p align="center"><em>Physical demonstration of the robots moving into their desired formation.</em></p>
 
 ### Measuring Formation Error
 
