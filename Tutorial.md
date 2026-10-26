@@ -199,7 +199,7 @@ The robot positions are represented directly in camera pixel coordinates. The im
 The robot heading is estimated using the direction from the bottom edge of the ArUco marker toward its top edge.
 
 <p align="center">
-  <img src="images/robot_heading_marker.png" alt="ArUco marker corners, top and bottom edge midpoints, and heading vector" width="450">
+  <img src="images/Robotics%20Marker%20with%20Prominent%20Purple%20Angle%20Arc.png" alt="ArUco marker corners, top and bottom edge midpoints, and heading vector" width="450">
 </p>
 <p align="center"><em>Figure 2. Marker-edge midpoints and heading direction.</em></p>
 
@@ -311,6 +311,13 @@ Where:
 
 For four robots, these points lie around a circle and form a square (diamond-shaped relative to the image axes). Their coordinates specify the formation's relative geometry, not a fixed location in the camera image.
 
+A three-robot formation can also be visualized as a triangle. In the schematic below, the arrows connect robot 0 to the other two robots. The illustration is a conceptual arrangement rather than a plot in the camera's x-y coordinate frame.
+
+<p align="center">
+  <img src="images/Robotic%20Triangular%20Formation%20Diagram.png" alt="Schematic of the three-robot circular formation and arrows from robot 0 to robots 1 and 2" width="460">
+</p>
+<p align="center"><em>Figure 4. Schematic three-robot triangular formation.</em></p>
+
 ```python
 def p_star():
     desired_positions = np.zeros((settings.ROBOTS_N, 2))
@@ -354,7 +361,7 @@ The three diagrams below show the desired displacement vectors from each robot's
     <td width="33%" align="center"><img src="images/desired_displacements_robot_2.png" alt="Desired displacement vectors from robot 2 to robots 0 and 1" width="100%"></td>
   </tr>
 </table>
-<p align="center"><em>Figure 4. Desired pairwise displacement vectors for robots 0, 1, and 2 in a three-robot circular formation.</em></p>
+<p align="center"><em>Figure 5. Desired pairwise displacement vectors for robots 0, 1, and 2 in a three-robot circular formation.</em></p>
 
 ```python
 def d_star(ROBOTS, desired_positions):
@@ -375,11 +382,6 @@ The supplied `formation_control(2).py` contains `p_star()` but does not yet defi
 For robot $`i`$, the current displacement vector to robot $`j`$ is calculated by subtracting the position of robot $`i`$ from the position of robot $`j`$. The desired displacement vector $`d_{ij}^*`$ is then subtracted from this current displacement.
 
 Remember that $`p_j-p_i`$ produces a vector pointing from robot $`i`$ to robot $`j`$.
-
-<p align="center">
-  <img src="images/formation_pairwise_comparison.png" alt="Three columns comparing desired and measured pairwise displacement vectors for robots 0, 1, and 2" width="760">
-</p>
-<p align="center"><em>Figure 5. Desired displacements (top row) versus current measured displacements (bottom row) for the same three robots.</em></p>
 
 ```math
 d_{ij}=p_j-p_i
@@ -405,11 +407,6 @@ u_i = \sum_{j\ne i} e_{ij}
 ```
 
 Here, $`u_i=[u_{ix},u_{iy}]`$ is the two-dimensional control vector. The fixed slots determine which relative positions each robot should maintain.
-
-<p align="center">
-  <img src="images/formation_control_u.png" alt="Formation control vectors pointing from current measured positions toward corrected positions for three robots" width="760">
-</p>
-<p align="center"><em>Figure 6. Formation-control vectors obtained by summing each robot's pairwise displacement errors.</em></p>
 
 ## 7. Converting a Vector into Robot Motion
 
@@ -714,6 +711,16 @@ The robots are not supposed to reach the same pixel. With four robots, the desir
 - The camera measurements contain noise
 - Wheel speeds may differ
 - The stopping threshold limits repeated small corrections
+
+### Physical Robot Demonstration
+
+The video below documents the HamsterS robots moving under the formation controller toward their assigned positions.
+
+[![Watch the physical HamsterS formation-control demonstration](images/setup.jpeg)](images/Media2_cropped.mp4)
+
+[Watch the robot demonstration video (`Media2_cropped.mp4`)](images/Media2_cropped.mp4)
+
+*Video 1. Experimental demonstration of the robots moving toward their formation.*
 
 ### Measuring Formation Error
 
