@@ -17,6 +17,16 @@ def p_star():
         ]
     return p_star
 
-
+def d_star(ROBOTS, desired_positions):
+    desired_offset = np.zeros((settings.ROBOTS_N, settings.ROBOTS_N, 2))
+    
+    for robot_a in ROBOTS.values():
+        for robot_b in ROBOTS.values():
+            desired_offset[robot_a.robot_i, robot_b.robot_i] = (
+                desired_positions[robot_b.slot]
+                - desired_positions[robot_a.slot]
+            )
+    
+    return desired_offset
 
         
