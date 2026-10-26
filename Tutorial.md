@@ -199,11 +199,11 @@ The robot positions are represented directly in camera pixel coordinates. The im
 The robot heading is estimated using the direction from the bottom edge of the ArUco marker toward its top edge.
 
 <p align="center">
-  <img src="images/robot_heading_marker.png" alt="ArUco marker corners, top and bottom edge midpoints, and heading vector" width="450">
+  <img src="images/Robotics%20Marker%20with%20Prominent%20Purple%20Angle%20Arc.png" alt="ArUco marker showing robot heading and orientation angle" width="450">
 </p>
-<p align="center"><em>Figure 2. Marker-edge midpoints and heading direction.</em></p>
+<p align="center"><em>Figure 2. ArUco marker heading direction and orientation angle.</em></p>
 
-The illustration labels the four corners from $`c_1`$ to $`c_4`$, while the OpenCV code above uses the zero-based indices $`c_0`$ to $`c_3`$. Its axes are illustrative; the controller computes angles using image coordinates, where the positive y-direction points downward.
+OpenCV uses the zero-based corner indices $`c_0`$ to $`c_3`$. The controller computes angles using image coordinates, where the positive y-direction points downward.
 
 First, the midpoint of the top edge and the midpoint of the bottom edge are calculated:
 
@@ -376,11 +376,6 @@ For robot $`i`$, the current displacement vector to robot $`j`$ is calculated by
 
 Remember that $`p_j-p_i`$ produces a vector pointing from robot $`i`$ to robot $`j`$.
 
-<p align="center">
-  <img src="images/formation_pairwise_comparison.png" alt="Three columns comparing desired and measured pairwise displacement vectors for robots 0, 1, and 2" width="760">
-</p>
-<p align="center"><em>Figure 5. Desired displacements (top row) versus current measured displacements (bottom row) for the same three robots.</em></p>
-
 ```math
 d_{ij}=p_j-p_i
 ```
@@ -405,11 +400,6 @@ u_i = \sum_{j\ne i} e_{ij}
 ```
 
 Here, $`u_i=[u_{ix},u_{iy}]`$ is the two-dimensional control vector. The fixed slots determine which relative positions each robot should maintain.
-
-<p align="center">
-  <img src="images/formation_control_u.png" alt="Formation control vectors pointing from current measured positions toward corrected positions for three robots" width="760">
-</p>
-<p align="center"><em>Figure 6. Formation-control vectors obtained by summing each robot's pairwise displacement errors.</em></p>
 
 ## 7. Converting a Vector into Robot Motion
 
@@ -714,6 +704,10 @@ The robots are not supposed to reach the same pixel. With four robots, the desir
 - The camera measurements contain noise
 - Wheel speeds may differ
 - The stopping threshold limits repeated small corrections
+
+### Real-Robot Demonstration
+
+[Watch the HamsterS robots perform formation control (MP4)](images/Media2_cropped.mp4)
 
 ### Measuring Formation Error
 
