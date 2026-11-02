@@ -1,29 +1,41 @@
+
 # Multi-Robot Formation Control with Differential-Drive Robots
 
-An introductory tutorial on multi-robot formation control using **HamsterS differential-drive robots**, an overhead camera, and **ArUco markers**. A centralized Python controller estimates each robot's position and orientation, computes control vectors from desired relative positions, and converts those vectors into wheel commands to establish a circular formation.
+A tutorial on multi-robot formation control using **HamsterS differential-drive robots**, an overhead camera, and **ArUco markers**. The implementation tracks robot poses with OpenCV, computes formation-control vectors from relative positions, and converts those vectors into wheel commands.
+
+The complete instructions, code explanations, and demonstrations are available in the **[full tutorial](TUTORIAL.md)**.
 
 ## Objectives
 
-This tutorial covers:
+This tutorial introduces how to:
 
-- Detecting and tracking multiple robots with OpenCV and ArUco markers.
-- Defining a desired circular formation using relative displacement vectors.
-- Computing formation errors and control vectors for each robot.
-- Converting control vectors into differential-drive wheel commands.
-- Integrating localization, formation control, and basic reactive obstacle avoidance in a continuous control loop.
+- Detect and track multiple robots using ArUco markers and an overhead camera.
+- Define a circular formation using desired relative displacement vectors.
+- Calculate formation errors and control vectors for each robot.
+- Convert control vectors into differential-drive wheel commands.
+- Integrate robot localization, formation control, and reactive obstacle avoidance.
 
-## System Overview
+## Tutorial
 
-Each robot carries a unique ArUco marker visible to a stationary overhead camera. The computer uses the camera measurements to estimate robot poses, compare the current arrangement with the desired formation, and send wheel commands to the robots through RoboID.
+The following links jump directly to the corresponding sections of the full tutorial:
 
-The example implementation uses **fixed formation assignments**: each robot moves toward its assigned position relative to the other robots, rather than converging to a shared point.
+1. [System overview and project structure](TUTORIAL.md#2-system-overview)
+2. [Hardware setup and ArUco markers](TUTORIAL.md#3-hardware)
+3. [Software requirements and controller settings](TUTORIAL.md#4-software-requirements)
+4. [Robot pose tracking](TUTORIAL.md#5-tracking-robot-poses) — [marker detection](TUTORIAL.md#aruco-marker-detection), [position](TUTORIAL.md#finding-robot-position), and [orientation](TUTORIAL.md#finding-robot-orientation)
+5. [Formation control](TUTORIAL.md#6-formation-control) — [circular formations](TUTORIAL.md#circular-formation), [desired displacements](TUTORIAL.md#desired-pairwise-displacements), and [control vectors](TUTORIAL.md#formation-error-and-control-vector)
+6. [Differential-drive robot motion](TUTORIAL.md#7-converting-a-vector-into-robot-motion) — including [reactive obstacle avoidance](TUTORIAL.md#reactive-obstacle-avoidance)
+7. [Main control loop and implementation](TUTORIAL.md#8-main-control-loop)
+8. [Running the tutorial](TUTORIAL.md#9-running-the-tutorial)
+9. [Expected results and real-robot demonstration](TUTORIAL.md#10-expected-result)
+10. [Troubleshooting](TUTORIAL.md#11-troubleshooting)
 
 ## Requirements
 
 - Two or more HamsterS robots
 - An overhead USB camera and one ArUco marker per robot
 - Python 3.10 or newer
-- NumPy, OpenCV with the ArUco module, and RoboID
+- NumPy, OpenCV (ArUco), and RoboID
 
 Install the Python dependencies:
 
@@ -31,20 +43,16 @@ Install the Python dependencies:
 python -m pip install numpy opencv-contrib-python roboid
 ```
 
-## Tutorial Outline
-
-1. **Robot tracking:** Identify markers and estimate each robot's position and heading.
-2. **Formation definition:** Assign positions around a circle and calculate desired pairwise displacements.
-3. **Formation control:** Compute the difference between actual and desired relative positions.
-4. **Robot motion:** Convert each control vector into turning and forward wheel commands.
-5. **Execution:** Run the camera-based feedback loop and observe the resulting formation.
+For setup details and controller parameters, see [Hardware](TUTORIAL.md#3-hardware) and [Software Requirements](TUTORIAL.md#4-software-requirements).
 
 ## Demonstration
 
-The tutorial includes demonstrations of the robots moving into a circular formation and using proximity sensors for basic reactive obstacle avoidance.
+The tutorial demonstrates physical robots moving toward a circular formation and using proximity sensors for basic obstacle avoidance.
 
-![HamsterS robots moving into formation](images/Media2_cropped.gif)
+See the [real-robot demonstration](TUTORIAL.md#real-robot-demonstration) and [reactive obstacle avoidance](TUTORIAL.md#reactive-obstacle-avoidance) sections.
+
+![HamsterS robots moving into a circular formation](images/Media2_cropped.gif)
 
 ## Summary
 
-This project provides a practical introduction to multi-robot perception and coordinated control with physical differential-drive robots. It demonstrates how overhead visual tracking, relative-position control, and robot actuation can be combined into a working formation-control system.
+The tutorial combines overhead camera-based localization, pairwise formation control, and differential-drive actuation in a simple multi-robot system. See the [full tutorial summary](TUTORIAL.md#13-summary).
