@@ -1,4 +1,3 @@
-
 # Multi-Robot Formation Control with Differential Drive Robots
 
 This tutorial introduces the basic concepts of a multi-robot system by implementing formation control for HamsterS differential-drive robots.
@@ -13,8 +12,9 @@ By the end of the tutorial, you should understand how to:
 2. Estimate each robot's position and orientation from camera images.
 3. Define a circular formation using relative displacement vectors.
 4. Calculate formation errors and control vectors for each robot.
-5. Convert control vectors into differential-drive wheel commands.
-6. Integrate perception and control into a continuous control loop.
+5. Derive a motion command from a potential function that measures formation error.
+6. Convert control vectors into differential-drive wheel commands.
+7. Integrate perception and control into a continuous control loop.
 
 The system uses fixed formation-slot assignments, meaning each robot is assigned a predetermined position within the desired formation. The goal is to establish the circular arrangement, not to bring all robots to the same point.
 
@@ -391,16 +391,29 @@ For example, with $`p_i=(100,100)`$, $`p_j=(70,160)`$ and $`d_{ij}^*=(-100,100)`
 d_{ij}=(-30,60),\qquad e_{ij}=(-30,60)-(-100,100)=(70,-40)
 ```
 
-This is one pair's contribution to robot $`i`$'s control vector. The controller sums the errors from all other robots.
+Each pairwise error describes how far one relative displacement is from its target. To turn these errors into motion, we define a **formation potential** that is small when the desired geometry is achieved and larger when the robots move out of formation. This is an example of an **artificial potential field (APF)**, where robot motion is determined by the slope of a potential function.
 
-The resulting pairwise displacement errors are summed to produce the control vector for robot $`i`$:
+For all robot pairs, the quadratic formation potential is:
 
 ```math
-u_i = \sum_{j\ne i} e_{ij}
-= \sum_{j\ne i}\left[(p_j-p_i)-d_{ij}^*\right]
+V(p_0,\ldots,p_{N-1}) = \frac{1}{2}\sum_{i<j}\left\|(p_j-p_i)-d_{ij}^*\right\|^2
 ```
 
-Here, $`u_i=[u_{ix},u_{iy}]`$ is the two-dimensional control vector. The fixed slots determine which relative positions each robot should maintain.
+Here, $`V`$ is a single value measuring the formation's total squared displacement error. The condition $`i<j`$ counts each pair only once. When all relative displacements match the target formation, $`V=0`$.
+
+To reduce this error, robot $`i`$ follows the **negative gradient** of $`V`$ with respect to its own position:
+
+```math
+u_i = -\nabla_{p_i}V
+= \sum_{j\ne i}\left[(p_j-p_i)-d_{ij}^*\right]
+= \sum_{j\ne i}e_{ij}
+```
+
+The result is the two-dimensional control vector $`u_i=[u_{ix},u_{iy}]`$. The negative gradient combines the errors from all other robots into a direction that reduces the formation potential under ideal planar motion. The equality follows from $`d_{ji}^*=-d_{ij}^*`$ and $`e_{ji}=-e_{ij}`$, since the target displacements are constructed from the same formation slots.
+
+Because the potential depends on relative positions rather than absolute coordinates, the robots can form the desired shape anywhere in the camera view. Translating the entire team by the same amount does not change $`V`$.
+
+For ideal robots able to move directly according to $`\dot p_i=u_i`$, the potential satisfies $`\dot V=-\sum_i\|\nabla_{p_i}V\|^2\leq 0`$. The HamsterS robots instead turn and drive using discrete wheel commands, so this idealized property does not guarantee a steady decrease in error during a physical run.
 
 ## 7. Converting a Vector into Robot Motion
 
@@ -410,7 +423,7 @@ The formation controller produces a movement vector in the camera image coordina
 u=[u_x,u_y]
 ```
 
-This vector contains both a desired movement direction and a magnitude. However, a differential-drive robot cannot move directly in an arbitrary x and y direction. It can only drive forward or backward and rotate by changing the speeds of its two wheels.
+The vector provides a desired direction of motion in the image plane, but a differential-drive robot cannot move directly in an arbitrary x and y direction. It can only drive forward or backward and rotate by changing the speeds of its two wheels.
 
 ### Target Heading
 
@@ -506,7 +519,7 @@ if right > settings.OBS_THRESHOLD:
     return
 ```
 
-This is basic reactive obstacle avoidance, not collision-free path planning. On another differential-drive platform, the formation calculations remain applicable; sensor and wheel commands must be adapted to that robot.
+This is basic reactive obstacle avoidance, not collision-free path planning. The proximity response temporarily overrides formation control rather than adding a repulsive potential to the formation potential. On another differential-drive platform, the formation calculations remain applicable; sensor and wheel commands must be adapted to that robot.
 
 <p align="center">
   <img src="images/obstacle_vid.gif" alt="HamsterS robots demonstrating reactive obstacle avoidance" width="550">
@@ -811,6 +824,7 @@ This introductory implementation has several limitations:
 - The robots may collide while moving into formation
 - Only basic proximity-sensor-based reactive avoidance is included; collision-free motion is not guaranteed
 - No camera calibration or homography is included
+- Differential-drive motion and reactive obstacle avoidance do not guarantee that the formation potential decreases continuously
 
 
 ## 13. Summary
@@ -822,6 +836,7 @@ The system:
 - Detects each robot using an ArUco marker
 - Estimates robot position and orientation
 - Calculates a formation-control vector from pairwise displacement errors
+- Computes control vectors from the negative gradient of a quadratic formation potential
 - Converts the vector into differential-drive motion
 - Moves the robots toward a circular formation with a specified radius
 
