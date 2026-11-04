@@ -1,4 +1,3 @@
-
 # Multi-Robot Formation Control with Differential-Drive Robots
 
 A tutorial on multi-robot formation control using **HamsterS differential-drive robots**, an overhead camera, and **ArUco markers**. The implementation tracks robot poses with OpenCV, computes formation-control vectors from relative positions, and converts those vectors into wheel commands.
@@ -51,7 +50,7 @@ The tutorial demonstrates physical robots moving toward a circular formation and
 
 See the [real-robot demonstration](TUTORIAL.md#real-robot-demonstration) and [reactive obstacle avoidance](TUTORIAL.md#reactive-obstacle-avoidance) sections.
 
-![HamsterS robots moving into a circular formation](images/Media2_cropped.gif)
+![HamsterS robots moving into a circular formation](images/rendezvous_example.gif)
 
 ## Summary
 
