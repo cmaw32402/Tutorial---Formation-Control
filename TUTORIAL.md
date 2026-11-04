@@ -200,7 +200,7 @@ The robot positions are represented directly in camera pixel coordinates. The im
 The robot heading is estimated using the direction from the bottom edge of the ArUco marker toward its top edge.
 
 <p align="center">
-  <img src="images/Robotics%20Marker%20with%20Prominent%20Purple%20Angle%20Arc.png" alt="ArUco marker showing robot heading and orientation angle" width="450">
+  <img src="images/heading.png" alt="ArUco marker showing robot heading and orientation angle" width="450">
 </p>
 <p align="center"><em>Figure 2. ArUco marker heading direction and orientation angle.</em></p>
 
@@ -727,7 +727,7 @@ The robots are not supposed to reach the same pixel. With four robots, the desir
 ### Real-Robot Demonstration
 
 <p align="center">
-  <img src="images/Media2_cropped.gif" alt="HamsterS robots moving into their circular formation" width="550">
+  <img src="images/rendezvous_example.gif" alt="HamsterS robots moving into their circular formation" width="550">
 </p>
 <p align="center"><em>Physical demonstration of the robots moving into their desired formation.</em></p>
 
