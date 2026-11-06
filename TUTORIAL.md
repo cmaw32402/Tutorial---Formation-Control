@@ -772,17 +772,16 @@ Possible solutions include:
 - Increase the stopping threshold
 - Reduce wheel speed
 
-## 12. Limitations (Keep?)
+## 12. Limitations
 
 This introductory implementation has several limitations:
 
 - Positions are measured in pixels rather than physical units
-- The system depends on an overhead camera
+- The system is centralized and depends on an overhead camera
 - All robots must remain visible
 - The controller is centralized
-- The robots may collide while moving into formation
+- Slots are fixed, robots may collide while moving into formation 
 - Only basic proximity-sensor-based reactive avoidance is included; collision-free motion is not guaranteed
-- No camera calibration or homography is included
 
 
 ## 13. Summary
