@@ -274,9 +274,7 @@ The formation controller uses the relative positions between each pair of robots
 
 ### Circular Formation
 
-In this project, the desired formation places the robots at equally spaced points around a circle. The angular spacing is calculated by dividing $`2\pi`$ radians by the number of robots. This produces a set of formation coordinates centered at the origin, $`(0,0)`$.
-
-These formation coordinates are stored in $`P^*`$:
+The desired formation places the robots at equally spaced points around a circle. The set of desired positions is called $`P^*`$ ("P star"). First, we find the spacing between formation slots by dividing one full revolution, $`2\pi`$ radians ($`360^\circ`$), by the number of robots. Each robot is assigned a fixed slot, and the angle of that slot is used to calculate its desired coordinates:
 
 ```math
 p_i^* = \begin{bmatrix}
@@ -309,7 +307,7 @@ Where:
 </table>
 <p align="center"><em>Figure 3. Desired circular formations for different numbers of robots (R = 100 pixels).</em></p>
 
-For four robots, these points lie around a circle and form a square (diamond-shaped relative to the image axes). Their coordinates specify the formation's relative geometry, not a fixed location in the camera image.
+For four robots, these positions form a square (diamond-shaped relative to the image axes). The coordinates in $`P^*`$ are defined relative to the origin, $`(0,0)`$, rather than a fixed location in the camera image. They describe the shape of the formation, but not where the robots must form it. To establish the same arrangement anywhere in the camera view, we next calculate the relative displacements between formation slots.
 
 ```python
 def p_star():
@@ -329,11 +327,11 @@ The center-to-center spacing between adjacent formation slots is:
 d_{\mathrm{adjacent}}=2R\sin\left(\frac{\pi}{N}\right)
 ```
 
-For `ROBOTS_N = 4` and `SHAPE_R = 100`, adjacent slots are approximately 141.4 pixels apart. This helps when choosing a radius large enough for physical clearance.
+For `ROBOTS_N = 4` and `SHAPE_R = 100`, adjacent slots are approximately 141.4 pixels apart. As the number of robots increases while the radius stays fixed, neighboring slots become closer together. Choose a radius that gives the robots enough room to move without colliding.
 
 ### Desired Pairwise Displacements
 
-The desired displacement vectors between robots $`i`$ and $`j`$ are calculated from the coordinates in $`P^*`$ and stored in $`d^*`$:
+Rather than directing each robot to a fixed position in the image, the controller uses relative displacements between formation slots. This allows the same formation to be established anywhere within the camera's field of view. The set of desired pairwise displacement vectors is called $`D^*`$ ("D star"). Each vector is calculated from the positions in $`P^*`$:
 
 ```math
 d_{ij}^* = p_j^* - p_i^*
@@ -344,6 +342,8 @@ Where:
 - $`d_{ij}^*`$: Desired displacement vector pointing from robot $`i`$ to robot $`j`$.
 - $`p_i^*`$ and $`p_j^*`$: Desired positions of the fixed formation slots for robots $`i`$ and $`j`$.
 - `d_star(ROBOTS, desired_positions)`: Builds the desired-displacement array using each robot's assigned `slot`.
+
+Subtracting $`p_i^*`$ from $`p_j^*`$ produces a vector pointing from robot $`i`$'s desired slot to robot $`j`$'s desired slot. This vector specifies both the direction and distance that should separate the two robots. For example, if robot $`j`$ should be 100 pixels to the right of robot $`i`$, then $`d_{ij}^*=(100,0)`$. That relationship stays the same even when the entire formation moves to a different part of the camera view.
 
 The three diagrams below show the desired displacement vectors from each robot's assigned formation slot to the other two slots in a three-robot circle. Solid squares denote the robot whose vectors are being shown; dashed squares mark the other target slots.
 
