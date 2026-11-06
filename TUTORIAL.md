@@ -390,7 +390,6 @@ For example, with $`p_i=(100,100)`$, $`p_j=(70,160)`$ and $`d_{ij}^*=(-100,100)`
 d_{ij}=(-30,60),\qquad e_{ij}=(-30,60)-(-100,100)=(70,-40)
 ```
 
-The controller uses the pairwise displacement errors to determine each robot's direction of motion. This is a simple **artificial potential field (APF)** approach: deviations from the desired formation create a quadratic error potential, and its negative gradient gives the control vector for robot $`i`$:
 
 ```math
 u_i = \sum_{j\ne i} e_{ij}
