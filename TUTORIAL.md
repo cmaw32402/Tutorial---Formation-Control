@@ -291,20 +291,7 @@ Where:
 - $`i`$: Robot's fixed formation slot index, starting at 0.
 - $`2\pi/N`$: Angular spacing between consecutive slots.
 
-<table>
-  <tr>
-    <td align="center" width="25%"><img src="images/circular_formation_n1.png" alt="Circular formation with one robot" width="100%"></td>
-    <td align="center" width="25%"><img src="images/circular_formation_n2.png" alt="Circular formation with two robots" width="100%"></td>
-    <td align="center" width="25%"><img src="images/circular_formation_n3.png" alt="Circular formation with three robots" width="100%"></td>
-    <td align="center" width="25%"><img src="images/circular_formation_n4.png" alt="Circular formation with four robots" width="100%"></td>
-  </tr>
-  <tr>
-    <td align="center"><em>N = 1</em></td>
-    <td align="center"><em>N = 2</em></td>
-    <td align="center"><em>N = 3</em></td>
-    <td align="center"><em>N = 4</em></td>
-  </tr>
-</table>
+<p align="center"><img src="images/p_star.png" alt="Desired circular formation diagrams for one through four robots" width="900"></p>
 <p align="center"><em>Figure 3. Desired circular formations for different numbers of robots (R = 100 pixels).</em></p>
 
 For four robots, these positions form a square (diamond-shaped relative to the image axes). The coordinates in $`P^*`$ are defined relative to the origin, $`(0,0)`$, rather than a fixed location in the camera image. They describe the shape of the formation, but not where the robots must form it. To establish the same arrangement anywhere in the camera view, we next calculate the relative displacements between formation slots.
@@ -347,13 +334,7 @@ Subtracting $`p_i^*`$ from $`p_j^*`$ produces a vector pointing from robot $`i`$
 
 The three diagrams below show the desired displacement vectors from each robot's assigned formation slot to the other two slots in a three-robot circle. Solid squares denote the robot whose vectors are being shown; dashed squares mark the other target slots.
 
-<table>
-  <tr>
-    <td width="33%" align="center"><img src="images/desired_displacements_robot_0.png" alt="Desired displacement vectors from robot 0 to robots 1 and 2" width="100%"></td>
-    <td width="33%" align="center"><img src="images/desired_displacements_robot_1.png" alt="Desired displacement vectors from robot 1 to robots 0 and 2" width="100%"></td>
-    <td width="33%" align="center"><img src="images/desired_displacements_robot_2.png" alt="Desired displacement vectors from robot 2 to robots 0 and 1" width="100%"></td>
-  </tr>
-</table>
+<p align="center"><img src="images/d_star.png" alt="Desired pairwise displacement vectors for robots 0, 1, and 2" width="750"></p>
 <p align="center"><em>Figure 4. Desired pairwise displacement vectors for robots 0, 1, and 2 in a three-robot circular formation.</em></p>
 
 ```python
