@@ -391,12 +391,7 @@ d_{ij}=(-30,60),\qquad e_{ij}=(-30,60)-(-100,100)=(70,-40)
 ```
 
 
-```math
-u_i = \sum_{j\ne i} e_{ij}
-= \sum_{j\ne i}\left[(p_j-p_i)-d_{ij}^*\right]
-```
-
-Here, $`u_i=[u_{ix},u_{iy}]`$ is the two-dimensional control vector. It combines the displacement errors from the other robots to guide robot $`i`$ toward the desired arrangement. Because the controller uses relative displacements, the formation can be achieved anywhere in the camera view rather than at one fixed location.
+Each robot combines its pairwise displacement errors to calculate a two-dimensional control vector, $`u_i=[u_{ix},u_{iy}]`$, which guides robot $`i`$ toward the desired arrangement. Because the controller uses relative displacements, the formation can be achieved anywhere in the camera view rather than at one fixed location.
 
 ## 7. Converting a Vector into Robot Motion
 
